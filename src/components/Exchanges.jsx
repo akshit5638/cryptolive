@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { server } from '../index'
-import { Box, Container, HStack, VStack, Image, Heading, Text } from '@chakra-ui/react'
+import { Box, Container, HStack, VStack, Image, Heading, Text, Button } from '@chakra-ui/react'
 import Loader from './Loader.jsx'
 import ErrorComponent from './ErrorComponent.jsx'
 const Exchanges = () => {
     const [exchanges, setExchanges] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [page, setPage] = useState(2);
+    const changePage = (page) => {
+        setPage(page);
+        setLoading(true);
+        window.scrollTo(0, 0);
 
-
+    }
+    const btn = new Array(8).fill(1);
     useEffect(() => {
         const fetchExchanges = async () => {
             try {
-                const { data } = await axios.get(`${server}/exchanges`);
+                const { data } = await axios.get(`${server}/exchanges?page=${page}`);
                 setExchanges(data);
                 setLoading(false);
             } catch (error) {
@@ -22,7 +28,7 @@ const Exchanges = () => {
             }
         };
         fetchExchanges();
-    }, []);
+    }, [page]);
 
     if (error)
         return <ErrorComponent message={"Error While Fetching Exchanges"} />;
@@ -43,6 +49,22 @@ const Exchanges = () => {
                             url={i.url}
                         />
                     ))}
+                </HStack>
+                <HStack w={"full"} overflowX={"auto"} p={"8"}>
+
+                    {
+                        btn.map((item, index) => (
+                            <Button key={index} backgroundColor={'black'} color={'white'} onClick={() => changePage(index + 1)} css={{
+                                "&:hover": {
+                                    transform: "scale(1.1)",
+                                    cursor: 'pointer',
+                                    backgroundColor: 'rgb(211,211,211)',
+                                    color: 'black'
+
+                                },
+                            }}>{index + 1}</Button>
+                        ))
+                    }
                 </HStack>
             </>}
         </Box>

@@ -25,9 +25,10 @@ const Coins = () => {
         const fetchCoins = async () => {
             try {
                 const { data } = await axios.get(`${server}/coins/markets?vs_currency=${currency}&page=${page}`);
+                // console.log(data);
                 setCoins(data);
                 setLoading(false);
-                console.log(data);
+
             }
             catch (error) {
                 setError(true);
@@ -35,7 +36,7 @@ const Coins = () => {
             }
         };
         fetchCoins();
-    }, [currency, page])
+    }, [currency, page]);
     return (
         <Box m={'0'} w={'full'}>
             {loading ? <Loader /> :
